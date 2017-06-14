@@ -1,0 +1,39 @@
+# Webpack-produced artifacts
+docroot/dist/
+
+# Symbolic links
+data
+conf/heap.conf.php
+docroot/media
+docroot/cache
+docroot/heap-static
+docroot/js-codex
+
+# Node/NPM stuff
+node_modules/
+
+# Composer
+vendor/
+
+# OS-specific hidden files
+.DS_Store
+._.DS_Store
+/Icon?
+.AppleDouble
+
+# Various editors temp files
+*~
+*.swp
+*.swo
+
+# IDE - Sublime
+*.sublime-*
+
+# IDE - Phpstorm
+.idea
+
+# Eclipse - PDT
+.buildpath
+.metadata
+.settings/
+

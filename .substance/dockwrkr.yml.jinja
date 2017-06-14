@@ -1,0 +1,85 @@
+pids:
+  enabled: false
+  dirs: pids
+containers:
+  dbmaster:
+    image: turbulent/heap-mysql:2.0.2
+    hostname: dbmaster
+    env:
+      VAR_MYSQL_PASS: "dev"
+      VAR_MYSQL_INNODB_BUFFER_POOL_SIZE: "100M"
+      VAR_MYSQL_SERVER_ID: 2
+      VAR_MYSQL_REPLICATION_MASTER: 1
+      VAR_MYSQL_REPLICATION_USER: "replication"
+      VAR_MYSQL_REPLICATION_PASSWORD: "dev"
+      VAR_PROJECT_NAME: {{name}}
+    publish:
+      - "3306:3306"
+    volume:
+      - "{{SUBENV_ENVPATH}}/logs:/vol/logs"
+      - "{{SUBENV_ENVPATH}}/database:/vol/database"
+
+  redis:
+    image: turbulent/heap-redis:2.0.1
+    hostname: redis
+    publish:
+      - "6379:6379"
+    volume:
+      - "{{SUBENV_ENVPATH}}/logs:/vol/logs"
+      - "{{SUBENV_ENVPATH}}/database:/vol/database"
+
+  web:
+    image: turbulent/heap-app-dev:3.2.3
+    hostname: web
+    env:
+      VAR_FQDN: "{{SUBENV_FQDN}}"
+      VAR_NMAILER_HOSTNAME: "{{SUBENV_FQDN}}"
+      VAR_NMAILER_ROOT_ALIAS: "sys+dev@{{SUBENV_FQDN}}"
+      VAR_NMAILER_DOMAIN: "local.dev"
+      VAR_NMAILER_REMOTE_TLS: 1
+      VAR_NMAILER_REMOTE_HOST: "smtp-relay.gmail.com"
+      VAR_NMAILER_REMOTE_PORT: "587"
+      VAR_NMAILER_REMOTE_USER: ""
+      VAR_NMAILER_REMOTE_PASS: ""
+      VAR_HEAP_INDEX: "/index.php"
+      VAR_NGINX_SERVER_NAME: "{{SUBENV_FQDN}}"
+      VAR_FPM_MAX_CHILDREN: 5
+      VAR_FPM_MIN_CHILDREN: 5
+      VAR_FPM_MAX_REQUESTS: 500
+      VAR_NGINX_SSL_REDIRECT: ""
+      VAR_NGINX_SSL_REDIRECT_EXCEPTIONS: '["/robots.txt"]'
+      VAR_NGINX_AUTHMAP: '[{"location":"/robots.txt","authfile":null},{"location":"/api","authfile":null},{"location":"/","authfile":null}]'
+      VAR_PHP_MAX_FILE_UPLOADS: 100
+      {%- for k, v in SUBENV_VARS.iteritems() %}
+      {{k}}: "{{v}}"
+      {%- endfor %}
+    link:
+      - "dbmaster:dbmaster"
+      - "redis:redis"
+    publish:
+      - "80:80"
+      - "443:443"
+      - "9001:9001"
+      - "9002:9002"
+      - "9003:9003"
+      - "9004:9004"
+    volume:
+      - "/substance/.cache:/home/heap/.npm"
+      - "{{SUBENV_ENVPATH}}/logs:/vol/logs"
+      - "{{SUBENV_ENVPATH}}/var:/vol/var"
+      - "{{SUBENV_ENVPATH}}/spool:/vol/spool"
+      - "{{SUBENV_ENVPATH}}/data:/vol/data"
+      - "{{SUBENV_ENVPATH}}/conf/web:/vol/conf"
+      - "{{SUBENV_BASEPATH}}:/vol/website"
+
+  logrotate:
+    image: turbulent/heap-logrotate:2.0.1
+    hostname: logrotate
+    env:
+      VAR_LOGROTATE_MODE: "daily"
+      VAR_LOGROTATE_ROTATE: "7"
+    volume:
+      - "{{SUBENV_ENVPATH}}/logs:/vol/logs"
+      - "{{SUBENV_ENVPATH}}/conf/logrotate:/vol/conf"
+      - "/var/lib/docker/containers:/vol/docker-logs"
+

@@ -1,0 +1,8 @@
+script:
+  - mkdir -p conf/logrotate
+  - mkdir -p conf/web
+  - mkdir -p database
+  - mkdir -p logs
+  - mkdir -p spool
+  - mkdir -p var/profiles
+  - sudo chmod -R 777 var

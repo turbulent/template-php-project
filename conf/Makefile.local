@@ -1,0 +1,2 @@
+# Don't optimize autoloader, and show progress
+COMPOSER_FLAGS = --prefer-dist

@@ -1,0 +1,26 @@
+{
+  "name": "%hatch_client%/%hatch_project%",
+  "description": "%hatch_title%",
+  "type": "project",
+  "require": {
+  },
+  "require-dev": {
+  },
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "%hatch_author%",
+      "email": "%hatch_email%"
+    } 
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "%hatch_namespace%\\": "src/server/"
+    }
+  },
+  "scripts": {
+    "lint": "phpcs --standard=.cs/Turbulent src/server",
+    "lint-and-fix": "phpcbf --standard=.cs/Turbulent src/server"
+  }
+}
