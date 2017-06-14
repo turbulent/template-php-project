@@ -9,16 +9,16 @@ vars:
     description: Title of the project
     default: My Project
     required: true
-  '%hatch_namespace%':
-    description: PHP namespace, e.g. SomeClient\SomeProject
-    required: true
-    default: App
   '%hatch_author%':
     description: Project author name
     required: true
   '%hatch_email%':
     description: Project author email
     required: true
+  '%hatch_namespace%':
+    description: PHP namespace, e.g. SomeClient\SomeProject
+    required: true
+    default: App
 post-script:
   - rm LICENSE
   - mv README.tpl.md README.md
